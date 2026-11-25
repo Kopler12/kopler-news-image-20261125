@@ -1,11 +1,18 @@
-// A working news-image-daily entry (Node 22, standard library only): its image is the entry.png beside this file, and
-// the program copies it to /output/entry.png. A starting point, not a winner: replace the image. The gate takes a
-// whole PNG or JPEG of at most 1 MiB and 1024 by 1024 pixels, and the judge sees exactly the bytes copied.
+// The World Today — entry for make.fun news-image-20261125.
+// The image is drawn once (see render.py) and shipped beside this file as
+// entry.png; this program's only job is to place that exact image at the
+// path the grader reads. It runs offline and writes identical bytes on
+// every run, because it copies the same file every time.
 //
-// Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
+// Node 22, standard library only. Outside the grader's container,
+// MAKEFUN_OUTPUT_DIR stands in for /output:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
-import { copyFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-copyFileSync(new URL('./entry.png', import.meta.url), join(process.env.MAKEFUN_OUTPUT_DIR ?? '/output', 'entry.png'));
+const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+const image = readFileSync(new URL('./entry.png', import.meta.url));
+
+mkdirSync(outDir, { recursive: true });
+writeFileSync(join(outDir, 'entry.png'), image);
